@@ -197,6 +197,13 @@ class DefaultSource extends RelationProvider with SchemaRelationProvider with Cr
       case e: Exception => throw new Exception("timeout must be a valid integer")
     }
 
+    val maxCharsStr = parameters.getOrElse("maxChars", "4096")
+    val maxChars = try {
+      timeoutStr.toInt
+    } catch {
+      case e: Exception => throw new Exception("maxChars must be a valid integer")
+    }
+
     var customHeaders = ListBuffer[Header]()
     val pkChunkingStr = parameters.getOrElse("pkChunking", "false")
     val pkChunking = flag(pkChunkingStr, "pkChunkingStr")
@@ -228,7 +235,8 @@ class DefaultSource extends RelationProvider with SchemaRelationProvider with Cr
       schema,
       sqlContext,
       inferSchemaFlag,
-      timeout
+      timeout,
+      maxChars
     )
   }
 
